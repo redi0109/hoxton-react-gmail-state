@@ -16,14 +16,19 @@ type Email = {
 
 function App() {
   const [emails, setEmails] = useState(initialEmails)
+  const [hidenRead, setHidenRead] = useState(true)
+  const [page, setPage] = useState('starred')
 
   const unreadEmails = emails.filter(email => !email.read)
 
   const starredEmails = emails.filter(email => email.starred)
 
-  const [hidenRead, setHidenRead] = useState(true)
+ 
+  let emailsToDisplay = emails
+  if (hidenRead) emailsToDisplay = unreadEmails
+  if (page === 'starred') emailsToDisplay = emailsToDisplay.filter (email => email.starred)
 
-  const emailsToDisplay = hidenRead ? unreadEmails : emails
+
 
   function toogleRead(email: Email) {
     // 1- klonojme te dhenat
@@ -59,15 +64,19 @@ function App() {
       <nav className="left-menu">
         <ul className="inbox-list">
           <li
-            className="item active"
-            // onClick={() => {}}
+            className={page === 'inbox' ? 'item active' : 'item'}
+            onClick={() => {
+              setPage('inbox')
+            }}
           >
             <span className="label">Inbox</span>
             <span className="count">{unreadEmails.length}</span>
           </li>
           <li
-            className="item"
-            // onClick={() => {}}
+             className={page === 'starred' ? 'item active' : 'item'}
+            onClick={() => {
+              setPage('starred')
+            }}
           >
             <span className="label">Starred</span>
             <span className="count">{starredEmails.length}</span>
@@ -96,13 +105,13 @@ function App() {
       </nav>
       <main className="emails">
         {emailsToDisplay.map((email) => (
-          <div className={email.read ? 'email read' : 'email unread'}>
+          <div key={email.id} className={email.read ? 'email read' : 'email unread'}>
             <input
               className='read-checkbox'
               type='checkbox'
               checked={email.read}
               // te bejme te mundur klikimin e checkboxit te pare
-              onClick={() => {
+              onChange={() => {
                 toogleRead(email);
               }}
             />
@@ -111,7 +120,7 @@ function App() {
               type="checkbox"
               checked={email.starred}
               // te bejme te mundur klikimin e checkboxit te paare
-              onClick={() => {
+              onChange={() => {
                 toogleStarred(email);
               }}
             />
