@@ -40,7 +40,16 @@ function App() {
           </li>
         </ul>
       </nav>
-      <main className="emails">{/* Render a list of emails here */}</main>
+      <main className="emails">{
+        initialEmails.map(email => (
+          <div className="email">
+            <input type="checkbox" />
+            <input className="star-checkbox" type="checkbox" />
+            <span>{email.sender}</span>
+            <span className="title">{email.title}</span>
+          </div>
+        ))
+      }</main>
     </div>
   );
 }
