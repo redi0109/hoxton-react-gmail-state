@@ -15,20 +15,28 @@ type Email = {
 };
 
 function App() {
-  const [emails, setEmails] = useState(initialEmails);
+  const [emails, setEmails] = useState(initialEmails)
+
+  const unreadEmails = emails.filter(email => !email.read)
+
+  const starredEmails = emails.filter(email => email.starred)
+
+  const [hidenRead, setHidenRead] = useState(true)
+
+  const emailsToDisplay = hidenRead ? unreadEmails : emails
 
   function toogleRead(email: Email) {
     // 1- klonojme te dhenat
-    const emailsCopy = structuredClone(emails);
+    const emailsCopy = structuredClone(emails)
 
     //2- perputhim te dhenat qe na duhen e "emails" me "emailsCopy"
-    // @ts-ignore
-    const match = emailsCopy.finde((target) => target.id === email.id);
+   
+    const match = emailsCopy.finde((target : Email) => target.id === email.id)
 
-    match.read = !match.read;
+    match.read = !match.read
 
     // updetojme te dhenat
-    setEmails(emailsCopy);
+    setEmails(emailsCopy)
   }
 
   function toogleStarred(email: Email) {
@@ -36,10 +44,10 @@ function App() {
     const emailsCopy = structuredClone(emails);
 
     //2- perputhim te dhenat e "emails" me "emailsCopy"
-     // @ts-ignore
-    const match = emailsCopy.finde((target) => target.id === email.id);
+  
+    const match = emailsCopy.finde((target : Email) => target.id === email.id);
 
-    match.starred = !match.starred;
+    match.starred = !match.starred
 
     // updetojme te dhenat
     setEmails(emailsCopy);
@@ -55,14 +63,14 @@ function App() {
             // onClick={() => {}}
           >
             <span className="label">Inbox</span>
-            <span className="count">?</span>
+            <span className="count">{unreadEmails.length}</span>
           </li>
           <li
             className="item"
             // onClick={() => {}}
           >
             <span className="label">Starred</span>
-            <span className="count">?</span>
+            <span className="count">{starredEmails.length}</span>
           </li>
 
           <li className="item toggle">
@@ -70,14 +78,24 @@ function App() {
             <input
               id="hide-read"
               type="checkbox"
-              checked={false}
-              // onChange={() => {}}
+              checked={hidenRead}
+              onChange={() => {
+                setHidenRead(!hidenRead)
+                
+                // shkurtim i metodes if else
+
+                // if (hidenRead){
+                //   setHidenRead(false)
+                // } else{
+                //   setHidenRead(true)
+                // }
+              }}
             />
           </li>
         </ul>
       </nav>
       <main className="emails">
-        {emails.map((email) => (
+        {emailsToDisplay.map((email) => (
           <div className={email.read ? 'email read' : 'email unread'}>
             <input
               className='read-checkbox'
